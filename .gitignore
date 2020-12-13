@@ -1,0 +1,13 @@
+﻿/CWBlazor/Client/bin/
+/CWBlazor/Client/obj/
+/CWBlazor/Client/Properties/
+/CWBlazor/Domain/bin/
+/CWBlazor/Domain/obj/
+/CWBlazor/Server/bin/
+/CWBlazor/Server/debug.log
+/.vs/
+/.idea/
+/CWBlazor/Server/appsettings.json
+/CWBlazor/Shared/bin/
+/CWBlazor/Shared/obj/
+/CWBlazor/Server/obj/

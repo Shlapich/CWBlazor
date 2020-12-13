@@ -1,0 +1,44 @@
+﻿@using CWBlazor.Client.Extencions
+@inherits LayoutComponentBase
+@inject IJSRuntime JsRuntime
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+            @if (string.IsNullOrWhiteSpace(user?.Email))
+            {
+                <a href="login" class="nav-link text-dark">Login</a>
+            }
+            else
+            {
+                <a href="changePassword" class="nav-link text-dark">@user.Email (Change password)</a>
+                <a href="logout" class="nav-link text-dark" >Logout</a>
+            }
+        </div>
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code{
+    UserInfo user = new UserInfo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await JsRuntime.GetUserInfoAsync();
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        user = await JsRuntime.GetUserInfoAsync();
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}

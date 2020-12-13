@@ -1,0 +1,14 @@
+﻿@page "/logout"
+@using CWBlazor.Client.Extencions
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await JsRuntime.RemoveUserInfoAsync();
+
+        NavigationManager.NavigateTo("/");
+        await base.OnInitializedAsync();
+    }
+}

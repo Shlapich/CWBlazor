@@ -1,0 +1,69 @@
+﻿@page "/register"
+@using CWBlazor.Shared.Models
+@using CWBlazor.Client.Extencions
+@using CWBlazor.Shared.Contracts.Wrappers
+@layout AuthLayout
+@inject IAccountDataProvider DataProvider
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+
+<div id="register">
+    <div class="container">
+        <div id="register-row" class="row justify-content-center align-items-center">
+            <div id="register-column" class="col-md-6">
+                <div id="register-box" class="col-md-12">
+                    <EditForm Model="model" OnValidSubmit="OnValid" id="register-form" class="form">
+                        <h3 class="text-center text-info">Register</h3>
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        @if (isError)
+                        {
+                            <ErrorComponent Error="@error"></ErrorComponent>
+                        }
+                        <div class="form-group">
+                            <InputText @bind-Value="model.Email" class="form-control" placeholder="Email"></InputText>
+                        </div>
+                        <div class="form-group">
+                            <InputText type="password" @bind-Value="model.Password" class="form-control" placeholder="Password"></InputText>
+                        </div>
+                        <div class="form-group">
+                            <InputText type="password" @bind-Value="model.ConfirmPassword" class="form-control" placeholder="Confirm password"></InputText>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-info btn-md w-100" disabled="@isDisabled">submit</button>
+                        </div>
+                        <div id="register-link" class="row">
+                            <a href="login" class="nav-item text-info col-md-6">Login</a>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    private UserRegistrationRequest model = new UserRegistrationRequest();
+    private ErrorResponse error = null;
+    bool isDisabled = false;
+    bool isError = false;
+    private async Task OnValid()
+    {
+        isDisabled = true;
+        var msg = await DataProvider.Register(model);
+        {
+            if (msg.IsSuccess)
+            {
+                var result = msg.Value;
+                await JsRuntime.SetUserInfoAsync(new UserInfo { Email = model.Email, Token = result.Token, RefreshToken = result.RefreshToken });
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                error = msg.Error;
+                isError = true;
+            }
+
+            isDisabled = false;
+        }
+    }
+}
